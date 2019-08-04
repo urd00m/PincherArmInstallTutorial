@@ -1,0 +1,573 @@
+<?xml version="1.0"?>
+<!-- Describe URDF for PhantomX Pincher Arm -->
+<robot name="phantomx_pincher_arm" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- We can configure joints velocity limit and lower/upper limits
+    to allow access to different operational areas, e.g. left handed vs. right handed robot -->
+    <xacro:property name="joints_vlimit" value="1.571"/>
+    <xacro:property name="pan_llimit" value="-1.74"/>
+    <xacro:property name="pan_ulimit" value="1.74"/>
+    <xacro:property name="shoulder_llimit" value="-1.98"/>
+    <xacro:property name="shoulder_ulimit" value="1.88"/>
+    <xacro:property name="elbow_llimit" value="-1.58"/>
+    <xacro:property name="elbow_ulimit" value="0.59"/>
+    <xacro:property name="wrist_llimit" value="-1.79"/>
+    <xacro:property name="wrist_ulimit" value="1.67"/>
+
+    <!-- Included URDF Files -->
+    <xacro:include filename="$(find phantomx_pincher_arm_description)/urdf/phantomx_pincher_arm.xacro"/>
+
+    <!-- As we don't have a base here, add a base_link link as location reference -->
+     
+    <link name="base_footprint"/>
+    <!--
+       Base link is set at the bottom of the base mould.
+       This is done to be compatible with the way base link
+       was configured for turtlebot 1. Refer to
+
+       https://github.com/turtlebot/turtlebot/issues/40
+
+       To put the base link at the more oft used wheel
+       axis, set the z-distance from the base_footprint
+       to 0.352.
+      -->
+    <joint name="base_joint" type="fixed">
+      <origin xyz="0 0 0.0102" rpy="0 0 0" />
+      <parent link="base_footprint"/>
+      <child link="base_link" />
+    </joint>
+    <link name="base_link">
+      <visual>
+        <geometry>
+          <!-- new mesh -->
+          <mesh filename="package://kobuki_description/meshes/main_body.dae" />
+        </geometry>
+        <origin xyz="0.001 0 0.05199" rpy="0 0 0"/>
+      </visual>
+      <collision name="base">
+        <geometry>
+          <cylinder length="0.10938" radius="0.178"/>
+        </geometry>
+        <origin xyz="0.0 0 0.05949" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <!-- COM experimentally determined -->
+        <origin xyz="0.01 0 0"/>
+        <mass value="2.4"/> <!-- 2.4/2.6 kg for small/big battery pack -->
+        <!-- Kobuki's inertia tensor is approximated by a cylinder with homogeneous mass distribution
+             More details: http://en.wikipedia.org/wiki/List_of_moment_of_inertia_tensors
+             m = 2.4 kg; h = 0.09 m; r = 0.175 m
+             ixx = 1/12 * m * (3 * r^2 + h^2)
+             iyy = 1/12 * m * (3 * r^2 + h^2)
+             izz = 1/2 * m * r^2
+          -->
+        <inertia ixx="0.019995" ixy="0.0" ixz="0.0"
+                 iyy="0.019995" iyz="0.0"
+                 izz="0.03675" />
+      </inertial>
+    </link>
+
+    <joint name="wheel_left_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="wheel_left_link"/>
+      <origin xyz="0.00 ${0.23/2} 0.0250" rpy="${-M_PI/2} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+    <link name="wheel_left_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://kobuki_description/meshes/wheel.dae"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0352"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0"
+                 izz="0.001" />
+      </inertial>
+    </link>
+
+    <joint name="wheel_right_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="wheel_right_link"/>
+      <origin xyz="0.00 -${0.23/2} 0.0250" rpy="${-M_PI/2} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+    <link name="wheel_right_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://kobuki_description/meshes/wheel.dae"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0350"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0"
+                 izz="0.001" />
+      </inertial>
+    </link>
+
+    <joint name="caster_front_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="caster_front_link"/>
+      <origin xyz="0.115 0.0 0.007" rpy="${-M_PI/2} 0 0"/>
+    </joint>
+    <link name="caster_front_link">
+      <collision>
+        <geometry>
+          <cylinder length="0.0176" radius="0.017"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0"
+                 izz="0.001" />
+      </inertial>
+    </link>
+
+    <joint name="caster_back_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="caster_back_link"/>
+      <origin xyz="-0.135 0.0 0.009" rpy="${-M_PI/2} 0 0"/>
+    </joint>
+    <link name="caster_back_link">
+      <collision>
+        <geometry>
+          <cylinder length="0.0176" radius="0.017"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0"
+                 izz="0.001" />
+      </inertial>
+    </link>
+
+    <!-- Kobuki's sensors -->
+    <joint name="gyro_joint" type="fixed">
+      <axis xyz="0 1 0"/>
+      <origin xyz="0.056 0.062 0.0202" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="gyro_link"/>
+    </joint>
+    <link name="gyro_link">
+      <inertial>
+        <mass value="0.001"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0"
+                 iyy="0.000001" iyz="0"
+                 izz="0.0001"/>
+      </inertial>
+    </link>
+
+    <joint name="cliff_sensor_left_joint" type="fixed">
+      <origin xyz="0.08734 0.13601 0.0214" rpy="0 ${M_PI/2} 0" />
+      <parent link="base_link"/>
+      <child link="cliff_sensor_left_link" />
+    </joint>
+    <link name="cliff_sensor_left_link">
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+                 iyy="0.0001" iyz="0.0"
+                 izz="0.0001" />
+      </inertial>
+    </link>
+
+    <joint name="cliff_sensor_right_joint" type="fixed">
+      <origin xyz="0.085 -0.13601 0.0214" rpy="0 ${M_PI/2} 0" />
+      <parent link="base_link"/>
+      <child link="cliff_sensor_right_link" />
+    </joint>
+    <link name="cliff_sensor_right_link">
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+                 iyy="0.0001" iyz="0.0"
+                 izz="0.0001" />
+      </inertial>
+    </link>
+
+    <joint name="cliff_sensor_front_joint" type="fixed">
+      <origin xyz="0.156 0.00 0.0214" rpy="0 ${M_PI/2} 0" />
+      <parent link="base_link"/>
+      <child link="cliff_sensor_front_link" />
+    </joint>
+    <link name="cliff_sensor_front_link">
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+                 iyy="0.0001" iyz="0.0"
+                 izz="0.0001" />
+      </inertial>
+    </link>
+
+
+    <!-- phantomx_pincher_arm macro //joints_vlimit="${joints_vlimit}" pan_llimit="-2.617" pan_ulimit="2.617// -->
+    <phantomx_pincher_arm parent="base_link" color="White" gripper_color="White">
+        <origin xyz="0.0 0.00 0.077"/>
+    </phantomx_pincher_arm>
+
+    <!-- pole -->
+    <joint name="pole_bottom_1_joint" type="fixed">
+      <origin xyz=".12 .08 .1" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="pole_bottom_1_link"/>
+    </joint>
+    <link name="pole_bottom_1_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.0492" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.008"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.000001686" ixy="0.0" ixz="0.0"
+                 iyy="0.000001686" iyz="0.0"
+                 izz="0.000000144"/>
+      </inertial>
+    </link>
+    <joint name="pole_bottom_2_joint" type="fixed">
+      <origin xyz=".12 -.08 .1" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="pole_bottom_2_link"/>
+    </joint>
+    <link name="pole_bottom_2_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.0492" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.008"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.000001686" ixy="0.0" ixz="0.0"
+                 iyy="0.000001686" iyz="0.0"
+                 izz="0.000000144"/>
+      </inertial>
+    </link>
+
+    <joint name="pole_top_1_joint" type="fixed">
+      <origin xyz=".055 .12 .19" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="pole_top_1_link"/>
+    </joint>
+    <link name="pole_top_1_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0"
+                 iyy="0.000206991" iyz="0.0"
+                 izz="0.000001080"/>
+      </inertial>
+    </link>
+
+    <joint name="pole_top_2_joint" type="fixed">
+      <origin xyz=".055 -.12 .19" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="pole_top_2_link"/>
+    </joint>
+    <link name="pole_top_2_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0"
+                 iyy="0.000206991" iyz="0.0"
+                 izz="0.000001080"/>
+      </inertial>
+    </link>
+
+    <joint name="pole_top_3_joint" type="fixed">
+      <origin xyz="-.055 .12 .19" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="pole_top_3_link"/>
+    </joint>
+    <link name="pole_top_3_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0"
+                 iyy="0.000206991" iyz="0.0"
+                 izz="0.000001080"/>
+      </inertial>
+    </link>
+
+    <joint name="pole_top_4_joint" type="fixed">
+      <origin xyz="-.055 -.12 .19" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="pole_top_4_link"/>
+    </joint>
+    <link name="pole_top_4_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0"
+                 iyy="0.000206991" iyz="0.0"
+                 izz="0.000001080"/>
+      </inertial>
+    </link>
+
+    <joint name="plate_bottom_joint" type="fixed">
+      <origin xyz="0 0 .127" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="plate_bottom_link"/>
+    </joint>
+    <link name="plate_bottom_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/plate_bottom.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0"
+                 iyy="0.000206991" iyz="0.0"
+                 izz="0.000001080"/>
+      </inertial>
+    </link>
+    <joint name="plate_middle_joint" type="fixed">
+      <origin xyz="0 0 .1905" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="plate_middle_link"/>
+    </joint>
+    <link name="plate_middle_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/plate_bottom.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0"
+                 iyy="0.000206991" iyz="0.0"
+                 izz="0.000001080"/>
+      </inertial>
+    </link>
+
+    
+    <joint name="plate_top_joint" type="fixed">
+      <origin xyz="0 0 .29" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="plate_top_link"/>
+    </joint>
+    <link name="plate_top_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/plate_bottom.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0"
+                 iyy="0.000206991" iyz="0.0"
+                 izz="0.000001080"/>
+      </inertial>
+    </link>
+
+    <!-- camera -->
+    <joint name="pole_camera_joint" type="fixed">
+      <origin xyz="0 0 .381" rpy="0 -.523 0"/>
+      <parent link="base_link"/>
+      <child link="pole_camera_link"/>
+    </joint>
+    <link name="pole_camera_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0"
+                 iyy="0.000206991" iyz="0.0"
+                 izz="0.000001080"/>
+      </inertial>
+    </link>
+<xacro:include filename="$(find turtlebot_description)/urdf/turtlebot_gazebo.urdf.xacro"/>
+  <xacro:include filename="$(find turtlebot_description)/urdf/turtlebot_properties.urdf.xacro"/>
+   <xacro:property name="astra_cam_py" value="-0.0125"/>
+  <xacro:property name="astra_depth_rel_rgb_py" value="0.0250" />
+  <xacro:property name="astra_cam_rel_rgb_py"   value="-0.0125" />
+  <xacro:property name="astra_dae_display_scale"   value="1" />
+    <joint name="camera_rgb_joint" type="fixed">
+      <origin xyz="-.1778 ${astra_cam_py} 1.016"
+              rpy="0 .786 0"/>
+      <parent link="base_link"/>
+      <child link="camera_rgb_frame" />
+    </joint>
+    <link name="camera_rgb_frame"/>
+
+    <joint name="camera_rgb_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_rgb_frame" />
+      <child link="camera_rgb_optical_frame" />
+    </joint>
+    <link name="camera_rgb_optical_frame"/>
+
+    <joint name="camera_joint" type="fixed">
+      <origin xyz="0 ${astra_cam_rel_rgb_py} 0"
+              rpy="0 0 0"/>
+      <parent link="camera_rgb_frame"/>
+      <child link="camera_link"/>
+    </joint>
+    <link name="camera_link">
+      <visual>
+        <origin xyz="-0.04 0.02 -0.01" rpy="${M_PI/2} 0 ${M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/sensors/astra.dae" scale="${astra_dae_display_scale} ${astra_dae_display_scale} ${astra_dae_display_scale}"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+        <box size="0.0400 0.1650 0.0300"/>
+      </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.564" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
+                 iyy="0.000498940" iyz="0.0"
+                 izz="0.003879257" />
+      </inertial>
+    </link>
+
+    <joint name="camera_depth_joint" type="fixed">
+      <origin xyz="0 ${astra_depth_rel_rgb_py} 0" rpy="0 0 0" />
+      <parent link="camera_rgb_frame" />
+      <child link="camera_depth_frame" />
+    </joint>
+    <link name="camera_depth_frame"/>
+
+    <joint name="camera_depth_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_depth_frame" />
+      <child link="camera_depth_optical_frame" />
+    </joint>
+    <link name="camera_depth_optical_frame"/>
+
+    <!-- RGBD sensor for simulation, same as Kinect -->
+    <turtlebot_sim_3dsensor/>
+
+    
+</robot>
