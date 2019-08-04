@@ -6,12 +6,18 @@ This is for the Turtlebot Pincher arm, this contains the complete steps for inst
 This contains the step for moveit installation. 
 I recommend installing moveit at /opt/ros/kinetic/share and in a ws_moveit in the home diretory 
 
-## Installation for /opt/ros/kinetic/share: (Instructions found from https://moveit.ros.org/install/) 
+## Moveit quick install 
+navigate to where you install this repository *you should be in PincherArmInstallTutorial* 
+
 run in terminal 
+1. bash moveit_install.sh 
+
+## Installation for /opt/ros/kinetic/share: (Instructions found from https://moveit.ros.org/install/) 
+run in terminal *do not run if you did the quick install*
 1. sudo apt-get install ros-kinetic-moveit 
 
 ## Installation for ws_moveit:  (Instructions found from https://moveit.ros.org/install/source/) 
-run in terminal 
+run in terminal  *do not run if you did the quick install*
 1. rosdep update
 2. sudo apt-get update 
 3. sudo apt-get dist-upgrade 
@@ -58,3 +64,18 @@ You do not need terminal for this
 8. paste the copied kobuki_description folder into src folder
 
 # Errors during installation/building 
+
+#### Missing (file)_Configmsg.cmake files error 
+Solution: search (file)_msg ros in a web browser and go into the wiki page, go to the github page stated by the wiki page. Then navigate to the ws_moveit/src file and git clone (url found). Then cd .. and do catkin build in terminal.]
+
+#### CMAKE warning 
+Solution: if it doens't break the build you can ignore the error, most likely it doesn't mean anything. 
+
+#### CMAKE error 
+Solution: ask tim for my email, or go to the issues page on my repository and paste the error in, I will attempt to help you solve that error. 
+
+#### Can't find ros package during installation 
+Solution: Make sure you are connected to a router with internet access. *For directory's cup team* if you are on ARF you should switch to PRF_guest and make sure that you are logged in. You can check this by opening firefox and trying to access a website. If that doens't work do sudo apt-get update and sudo apt-get upgrade and try again. If it still doens't work ask Tim for my email or post the what package you were trying to install on my issues page. 
+
+#### Other errors 
+Solution: post on my issues page. *For directory's cup team* you can ask Tim for help or for my email, you can also post those issues on the repository's issues page. 
