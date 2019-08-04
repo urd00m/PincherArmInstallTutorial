@@ -39,7 +39,7 @@ run in terminal  __do not run if you did the quick install__
 19. catkin build   (this might take a long time, that is normal, *do not panick*) 
 20. source ~/ws_moveit/devel/setup.bash
 
-## PhantomX pincher arm Installation
+# PhantomX pincher arm Installation
 run in terminal 
 1. cd ~/ws_moveit/src
 2. git clone https://github.com/vanadiumlabs/arbotix_ros
