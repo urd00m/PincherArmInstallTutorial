@@ -24,9 +24,14 @@ run in terminal
 10. wstool update -t src
 11. rosdep install -y --from-paths src --ignore-src --rosdistro kinetic
 12. catkin config --extend /opt/ros/kinetic --cmake-args -DCMAKE_BUILD_TYPE=Release
-13. cd ~/ws_moveit
-14. catkin build   (this might take a long time, that is normal, *do not panick*) 
-15. source ~/ws_moveit/devel/setup.bash
+13. git clone https://github.com/ros-interactive-manipulation/manipulation_msgs.git 
+14. git clone https://github.com/ros-interactive-manipulation/household_objects_database_msgs
+15. git clone https://github.com/PickNikRobotics/rosparam_shortcuts
+16. git clone https://github.com/ros-planning/geometric_shapes
+17. git clone https://github.com/ros/geometry2
+18. cd ~/ws_moveit
+19. catkin build   (this might take a long time, that is normal, *do not panick*) 
+20. source ~/ws_moveit/devel/setup.bash
 
 ## PhantomX pincher arm Installation
 run in terminal 
@@ -41,5 +46,15 @@ run in terminal
 run in terminal 
 1. cd ~/ws_moveit/src/phantomx_pincher_arm/phantomx_pincher_arm_description
 2. sudo rm -r urdf
-3. 
+
+You do not need terminal for this 
+1. navigate to where you downloaded this github repository and enter into it 
+2. copy the urdf folder
+3. navigate to the ws_moveit, then enter into src, then phantomx_pincher_arm then phantomx_pincher_arm_description 
+4. paste the copied urdf folder into phantomx_pincher_arm_description 
+5. navigate to where you downloaded this github repository and enter into it 
+6. copy the kobuki_description folder 
+7. navigate to the ws_moveit, then enter into src
+8. paste the copied kobuki_description folder into src folder
+
 # Errors during installation/building 
