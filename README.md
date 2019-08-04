@@ -8,7 +8,7 @@ I recommend installing moveit at /opt/ros/kinetic/share and in a ws_moveit in th
 
 ## Installation for /opt/ros/kinetic/share: (Instructions found from https://moveit.ros.org/install/) 
 run in terminal 
-sudo apt-get install ros-kinetic-moveit 
+1. sudo apt-get install ros-kinetic-moveit 
 
 ## Installation for ws_moveit:  (Instructions found from https://moveit.ros.org/install/source/) 
 run in terminal 
