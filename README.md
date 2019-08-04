@@ -16,7 +16,7 @@ run in terminal
 run in terminal __do not run if you did the quick install__
 1. sudo apt-get install ros-kinetic-moveit 
 
-## Installation for ws_moveit:  (Instructions found from https://moveit.ros.org/install/source/) 
+## Installation for ws_moveit:  (Instructions found from https://moveit.ros.org/install/source/ with added neccesary parts) 
 run in terminal  __do not run if you did the quick install__
 1. rosdep update
 2. sudo apt-get update 
@@ -36,7 +36,7 @@ run in terminal  __do not run if you did the quick install__
 16. git clone https://github.com/ros-planning/geometric_shapes
 17. git clone https://github.com/ros/geometry2
 18. cd ~/ws_moveit
-19. catkin build   (this might take a long time, that is normal, *do not panick*) 
+19. catkin build   (this might take a long time, that is normal, __do not panick__) 
 20. source ~/ws_moveit/devel/setup.bash
 
 # PhantomX pincher arm Installation
