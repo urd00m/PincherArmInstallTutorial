@@ -1,0 +1,2 @@
+To run the pincher arm demo you need to first run
+source ~/ws_moveit/devel/setup.bash 
