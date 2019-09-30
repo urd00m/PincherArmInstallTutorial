@@ -1,2 +1,6 @@
 To run the pincher arm demo you need to first run
-source ~/ws_moveit/devel/setup.bash 
+
+In new terminal 
+1. source ~/ws_moveit/devel/setup.bash 
+2. roslaunch phantomx_pincher_arm_bringup arm.launch 
+3. roslaunch phantomx_pincher_arm_moveit_config phantomx_pincher_arm_moveit.launch
